@@ -14,7 +14,7 @@ CREATE TABLE Endereco (
 CREATE TABLE Empresa (
   idEmpresa INT AUTO_INCREMENT PRIMARY KEY,
   nomeEmpresa VARCHAR(45) NOT NULL,
-  CNPJ VARCHAR(14) NOT NULL,
+  CNPJ VARCHAR(14) NOT NULL UNIQUE,
   digito CHAR(3) NOT NULL,
   descricao VARCHAR(45) NULL,
   ispb CHAR(8) NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE Agencia (
   digitoAgencia CHAR(1) NULL,
   ddd CHAR(2) NULL,
   telefone VARCHAR(9) NULL,
-  email VARCHAR(45) NULL,
+  email VARCHAR(45) NULL UNIQUE,
   fkEmpresa INT NOT NULL,
   fkEndereco INT NOT NULL,
   CONSTRAINT fkEndereco
@@ -42,9 +42,9 @@ CREATE TABLE Funcionario (
   idFuncionario INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(45) NULL,
   sobrenome VARCHAR(45) NULL,
-  emailCorporativo VARCHAR(45) NULL,
+  emailCorporativo VARCHAR(45) NULL UNIQUE,
   ddd CHAR(2) NULL,
-  telefone VARCHAR(9) NULL,
+  telefone VARCHAR(9) NULL UNIQUE,
   cargo VARCHAR(45) NULL,
   situacao VARCHAR(10) NULL,
   fkAgencia INT NOT NULL,
@@ -60,6 +60,16 @@ CREATE TABLE Funcionario (
     FOREIGN KEY (fkFuncionario)
     REFERENCES Funcionario (idFuncionario)
 );
+
+CREATE TABLE Usuario (
+  idUsuario INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(45) NOT NULL UNIQUE,
+  token VARCHAR(50) NOT NULL,
+  fkFuncionario INT NOT NULL UNIQUE,
+  FOREIGN KEY (fkFuncionario)
+    REFERENCES Funcionario (idFuncionario)
+  );
+
 
 CREATE TABLE Maquina (
   idMaquina INT AUTO_INCREMENT PRIMARY KEY,
@@ -224,3 +234,5 @@ JOIN Maquina AS M ON F.idFuncionario = M.fkFuncionario
 JOIN Componente AS C ON M.idMaquina = C.fkMaquina
 JOIN Alerta AS A ON 1 = 1  -- Faz um "CROSS JOIN" para todos os alertas
 JOIN Registro AS R ON C.idComponente = R.fkComponente;
+
+select * from Usuario;
