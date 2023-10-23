@@ -136,7 +136,7 @@ VALUES
 -- Inserindo dados na tabela Empresa
 INSERT INTO Empresa (nomeEmpresa, CNPJ, digito, descricao, ispb, situacao)
 VALUES
-  ('Brasdesco', '60746948000112', '237', 'Bradesco S.A.', '60746948', 1),
+  ('Bradesco', '60746948000112', '237', 'Bradesco S.A.', '60746948', 1),
   ('Banco do Brasil', '00000000000191', '001', 'Banco do Brasil', '00000000', 1),
   ('Itau', '60701190000104', '341', 'Itau', '60701190', 1);
   
@@ -145,32 +145,6 @@ INSERT INTO Agencia (numero, digitoAgencia, ddd, telefone, email, fkEmpresa, fkE
 VALUES
   ('11111', '1', '11', '111111111', 'padrao@padrao.com', 1, 1);
 
--- Inserindo dados na tabela Funcionario
-INSERT INTO Funcionario (nome, sobrenome, emailCorporativo, ddd, telefone, cargo, situacao, fkAgencia, fkEmpresa, fkFuncionario)
-VALUES
-  ('Padrao', 'Padrao', 'padrao@padrao.com', '11', '123456789', 'Padrap', 'Ativo', 1, 1, NULL);
-
--- Inserindo dados na tabela Maquina
-INSERT INTO Maquina (marca, modelo, situacao, sistemaOperacional, fkFuncionario, fkAgencia, fkEmpresa)
-VALUES
-  ('Dell', 'Latitude', 'Ativa', 'Windows 10', 1, 1, 1);
-  
-
--- Inserindo dados na tabela Alerta
-INSERT INTO Alerta (causa, gravidade)
-VALUES
-  ('Sobrecarga de CPU', 'Alta'),
-  ('Problema na Rede', 'Média'),
-  ('Disco Rígido Cheio', 'Alta'),
-  ('Bateria Fraca', 'Baixa'),
-  ('Falha no Sistema', 'Alta'),
-  ('Superaquecimento', 'Média'),
-  ('Ataque de Segurança', 'Alta');
-
--- Inserindo dados na tabela Registro
-INSERT INTO Registro (enderecoIPV4, usoAtual, dataHora, fkAlerta, fkComponente, fkMaquina)
-VALUES
-  ('192.168.0.1', 80.5, '2023-10-15 10:00:00', 1, 1, 1);
 
 SELECT 
     F.nome,
@@ -191,6 +165,3 @@ JOIN Alerta AS A ON 1 = 1  -- Faz um "CROSS JOIN" para todos os alertas
 JOIN Registro AS R ON C.idComponente = R.fkComponente;
 
 select * from Usuario;
-
-INSERT INTO Funcionario (nome, sobrenome, emailCorporativo, ddd, telefone, cargo, situacao, fkAgencia, fkEmpresa) VALUES ('Michael', 'Teixeira', 'michael.silva@sptech.school', '11', '955777482', 'Dev', 'Ativo', 1, (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco'));
-
