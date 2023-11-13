@@ -125,6 +125,16 @@ CREATE TABLE Componente (
   nome VARCHAR(45) NULL UNIQUE
 );
 
+CREATE TABLE Processo (
+  idProcesso INT AUTO_INCREMENT PRIMARY KEY,
+  PID INT NOT NULL UNIQUE,
+  nome VARCHAR(45) NULL UNIQUE,
+  usoAtualRAM DOUBLE NULL,
+  usoAtualDisco DOUBLE NULL,
+  usoAtualCPU DOUBLE NULL,
+  dataHora DATETIME NOT NULL
+);
+
 INSERT INTO Componente (nome) VALUES
   ('Processador'),
   ('Memória RAM'),
@@ -246,3 +256,117 @@ WHERE Registro.fkAlerta = (SELECT idAlerta FROM Alerta WHERE causa = 'Sobrecarga
   AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco')
 ORDER BY (Registro.usoAtual - Registro.capacidadeMax) DESC
 LIMIT 1;
+
+
+SELECT DISTINCT
+  Maquina.idMaquina AS "ID Maquina",
+  Componente.nome AS "Nome Componente",
+  Registro.capacidadeMax AS "CapacidadeMaxima",
+  Registro.usoAtual AS "Uso Atual",
+  Maquina.situacao AS "Status"
+FROM (
+  SELECT
+      fkComponente,
+      MAX(Registro.dataHora) AS max_dataHora
+  FROM Registro
+  GROUP BY fkComponente	
+) AS ultimos_registros
+INNER JOIN Componente ON ultimos_registros.fkComponente = Componente.idComponente
+INNER JOIN Registro ON ultimos_registros.fkComponente = Registro.fkComponente AND ultimos_registros.max_dataHora = Registro.dataHora
+INNER JOIN Maquina ON Registro.fkMaquina = Maquina.idMaquina
+INNER JOIN Agencia ON Maquina.fkAgencia = Agencia.idAgencia
+INNER JOIN Alerta ON Registro.fkAlerta = Alerta.idAlerta
+WHERE Maquina.fkAgencia = 1
+AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco');
+
+
+SELECT distinct
+    Maquina.idMaquina AS "ID Maquina",
+    Componente.nome AS "Nome da Tarefa",
+    Registro.usoAtual AS "Uso Atual", 
+    Registro.dataHora AS "Data / Hora"
+FROM (
+    SELECT
+        fkComponente,
+        MAX(usoAtual) AS max_usoAtual
+    FROM Registro
+    GROUP BY fkComponente
+) AS ultimos_registros
+INNER JOIN Componente ON ultimos_registros.fkComponente = Componente.idComponente
+INNER JOIN Registro ON ultimos_registros.fkComponente = Registro.fkComponente AND ultimos_registros.max_usoAtual = Registro.usoAtual
+INNER JOIN Maquina ON Registro.fkMaquina = Maquina.idMaquina
+INNER JOIN Agencia ON Maquina.fkAgencia = Agencia.idAgencia
+INNER JOIN Alerta ON Registro.fkAlerta = Alerta.idAlerta
+WHERE Maquina.fkAgencia = 1
+AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco')
+order by Registro.usoAtual desc; 
+
+
+
+SELECT
+    Maquina.idMaquina AS "ID Maquina",
+    Componente.nome AS "Nome Componente",
+    Registro.capacidadeMax AS "Capacidade Máxima",
+    Registro.usoAtual AS "Uso Atual",
+    Maquina.situacao AS "Status",
+    MAX(Registro.dataHora) AS "Data / Hora"
+FROM Registro
+INNER JOIN Componente ON Registro.fkComponente = Componente.idComponente
+INNER JOIN Maquina ON Registro.fkMaquina = Maquina.idMaquina
+INNER JOIN Agencia ON Maquina.fkAgencia = Agencia.idAgencia
+WHERE Maquina.fkAgencia = (SELECT idAgencia FROM Agencia WHERE email = 'padrao@padrao.com')
+AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco')
+AND Maquina.idMaquina = 1
+GROUP BY Maquina.idMaquina, Componente.nome, Registro.capacidadeMax, Registro.usoAtual, Maquina.situacao
+ORDER BY MAX(Registro.dataHora) DESC
+LIMIT 5;
+
+
+SELECT 
+       Maquina.idMaquina AS "NumeroMaquina",
+       Registro.capacidadeMax AS "TotalCapacidade",
+       Registro.usoAtual AS "ConsumoAtual"
+  FROM Registro
+    JOIN Maquina ON Registro.fkMaquina = Maquina.idMaquina
+    JOIN Agencia ON Maquina.fkAgencia = Agencia.idAgencia
+  WHERE Registro.fkAlerta = (SELECT idAlerta FROM Alerta WHERE causa = 'Memória insuficiente' AND gravidade = 'Alta')
+    AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco')
+  ORDER BY (Registro.usoAtual - Registro.capacidadeMax) DESC
+  LIMIT 1;
+
+
+SELECT 
+       Maquina.idMaquina AS "NumeroMaquina",
+       Registro.capacidadeMax AS "TotalCapacidade",
+       Registro.usoAtual AS "ConsumoAtual"
+  FROM Registro
+    JOIN Maquina ON Registro.fkMaquina = Maquina.idMaquina
+    JOIN Agencia ON Maquina.fkAgencia = Agencia.idAgencia
+  WHERE Registro.fkAlerta = (SELECT idAlerta FROM Alerta WHERE causa = 'Sobrecarga de CPU' AND gravidade = 'Alta')
+    AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco')
+  ORDER BY (Registro.usoAtual - Registro.capacidadeMax) DESC
+  LIMIT 1;
+  
+  
+  SELECT DISTINCT
+  Componente.nome AS "NomeComponente",
+  Registro.capacidadeMax AS "CapacidadeMaxima",
+  Registro.usoAtual AS "UsoAtual",
+  Maquina.situacao AS "Status",
+  Maquina.idMaquina AS "IdMaquina"
+FROM (
+  SELECT
+      fkComponente,
+      MAX(Registro.dataHora) AS max_dataHora
+  FROM Registro
+  GROUP BY fkComponente
+) AS ultimos_registros
+INNER JOIN Componente ON ultimos_registros.fkComponente = Componente.idComponente
+INNER JOIN Registro ON ultimos_registros.fkComponente = Registro.fkComponente AND ultimos_registros.max_dataHora = Registro.dataHora
+INNER JOIN Maquina ON Registro.fkMaquina = Maquina.idMaquina
+INNER JOIN Agencia ON Maquina.fkAgencia = Agencia.idAgencia
+INNER JOIN Alerta ON Registro.fkAlerta = Alerta.idAlerta
+WHERE Maquina.idMaquina = 1
+AND Maquina.fkAgencia = 1
+AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco');
+
