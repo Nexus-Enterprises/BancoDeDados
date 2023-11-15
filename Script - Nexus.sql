@@ -170,7 +170,8 @@ VALUES
   ('SSD com Erro', 'Alta'),
   ('Sem Conexao com a Internet', 'Baixa'),
   ('Sem Conexao com a Internet', 'Media'),
-  ('Sem Conexao com a Internet', 'Alta');
+  ('Sem Conexao com a Internet', 'Alta'),
+  ('Sem Alerta', 'Nenhuma');
 
 CREATE TABLE Registro (
   idRegistro INT AUTO_INCREMENT PRIMARY KEY,
