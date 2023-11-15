@@ -125,16 +125,6 @@ CREATE TABLE Componente (
   nome VARCHAR(45) NULL UNIQUE
 );
 
-CREATE TABLE Processo (
-  idProcesso INT AUTO_INCREMENT PRIMARY KEY,
-  PID INT NOT NULL UNIQUE,
-  nome VARCHAR(45) NULL UNIQUE,
-  usoAtualRAM DOUBLE NULL,
-  usoAtualDisco DOUBLE NULL,
-  usoAtualCPU DOUBLE NULL,
-  dataHora DATETIME NOT NULL
-);
-
 INSERT INTO Componente (nome) VALUES
   ('Processador'),
   ('Memória RAM'),
@@ -144,6 +134,29 @@ INSERT INTO Componente (nome) VALUES
   ('Placa de rede (Ethernet)'),
   ('Placa de rede sem fio (Wi-Fi)'),
   ('Disco rígido externo');
+
+CREATE TABLE Processo (
+  idProcesso INT AUTO_INCREMENT PRIMARY KEY,
+  PID INT NOT NULL,
+  nome VARCHAR(45) NULL,
+  usoAtualRAM DOUBLE NULL,
+  usoAtualDisco DOUBLE NULL,
+  usoAtualCPU DOUBLE NULL,
+  dataHora DATETIME NOT NULL,
+  fkMaquina INT NOT NULL,
+   CONSTRAINT fkMaquinaProcesso
+    FOREIGN KEY (fkMaquina)
+    REFERENCES Maquina (idMaquina)
+);
+
+INSERT INTO Processo (PID, nome, usoAtualRAM, usoAtualDisco, usoAtualCPU, dataHora, fkMaquina)
+VALUES
+  (56789, 'chrome', 4.2, 2.5, 8.0, NOW(), 1),
+  (98765, 'firefox', 3.0, 3.8, 6.5, NOW(), 1),
+  (11122, 'vscode', 6.5, 5.2, 7.2, NOW(), 1),
+  (33344, 'spotify', 2.0, 1.5, 4.8, NOW(), 1),
+  (55566, 'explorer', 1.8, 2.0, 3.2, NOW(), 1);
+
 
 CREATE TABLE Alerta (
   idAlerta INT AUTO_INCREMENT PRIMARY KEY,
@@ -258,7 +271,6 @@ WHERE Registro.fkAlerta = (SELECT idAlerta FROM Alerta WHERE causa = 'Sobrecarga
 ORDER BY (Registro.usoAtual - Registro.capacidadeMax) DESC
 LIMIT 1;
 
-
 SELECT DISTINCT
   Maquina.idMaquina AS "ID Maquina",
   Componente.nome AS "Nome Componente",
@@ -279,7 +291,6 @@ INNER JOIN Agencia ON Maquina.fkAgencia = Agencia.idAgencia
 INNER JOIN Alerta ON Registro.fkAlerta = Alerta.idAlerta
 WHERE Maquina.fkAgencia = 1
 AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco');
-
 
 SELECT distinct
     Maquina.idMaquina AS "ID Maquina",
@@ -302,8 +313,6 @@ WHERE Maquina.fkAgencia = 1
 AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco')
 order by Registro.usoAtual desc; 
 
-
-
 SELECT
     Maquina.idMaquina AS "ID Maquina",
     Componente.nome AS "Nome Componente",
@@ -322,7 +331,6 @@ GROUP BY Maquina.idMaquina, Componente.nome, Registro.capacidadeMax, Registro.us
 ORDER BY MAX(Registro.dataHora) DESC
 LIMIT 5;
 
-
 SELECT 
        Maquina.idMaquina AS "NumeroMaquina",
        Registro.capacidadeMax AS "TotalCapacidade",
@@ -335,7 +343,6 @@ SELECT
   ORDER BY (Registro.usoAtual - Registro.capacidadeMax) DESC
   LIMIT 1;
 
-
 SELECT 
        Maquina.idMaquina AS "NumeroMaquina",
        Registro.capacidadeMax AS "TotalCapacidade",
@@ -347,7 +354,6 @@ SELECT
     AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco')
   ORDER BY (Registro.usoAtual - Registro.capacidadeMax) DESC
   LIMIT 1;
-  
   
   SELECT DISTINCT
   Componente.nome AS "NomeComponente",
@@ -370,4 +376,3 @@ INNER JOIN Alerta ON Registro.fkAlerta = Alerta.idAlerta
 WHERE Maquina.idMaquina = 1
 AND Maquina.fkAgencia = 1
 AND Agencia.fkEmpresa = (SELECT idEmpresa FROM Empresa WHERE nomeEmpresa = 'Bradesco');
-
