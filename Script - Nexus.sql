@@ -175,15 +175,6 @@ VALUES
   ('Erro de disco rígido', 'Baixa'),
   ('Erro de disco rígido', 'Media'),
   ('Erro de disco rígido', 'Alta'),
-  ('Erro na Placa de Video', 'Baixa'),
-  ('Erro na Placa de Video', 'Media'),
-  ('Erro na Placa de Video', 'Alta'),
-  ('SSD com Erro', 'Baixa'),
-  ('SSD com Erro', 'Media'),
-  ('SSD com Erro', 'Alta'),
-  ('Sem Conexao com a Internet', 'Baixa'),
-  ('Sem Conexao com a Internet', 'Media'),
-  ('Sem Conexao com a Internet', 'Alta'),
   ('Sem Alerta', 'Nenhuma');
 
 CREATE TABLE Registro (
