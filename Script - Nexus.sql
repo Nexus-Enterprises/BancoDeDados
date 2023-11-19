@@ -120,6 +120,8 @@ VALUES
 ('HP', 'EliteBook 840 G5', 'Ativa', 'Linux Mint', 5, 2, 1),
 ('Asus', 'AlienWare', 'Inativa', 'Windows 11', 6, 2, 1);
 
+UPDATE maquina SET situacao = 'Manutenção' WHERE idMaquina = 2;
+
 CREATE TABLE Componente (
   idComponente INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(45) NULL UNIQUE
@@ -177,6 +179,7 @@ VALUES
   ('Erro de disco rígido', 'Alta'),
   ('Sem Alerta', 'Nenhuma');
 
+
 CREATE TABLE Registro (
   idRegistro INT AUTO_INCREMENT PRIMARY KEY,
   modelo VARCHAR(50) NULL,
@@ -224,7 +227,6 @@ VALUES
   ('Intel I3-4730', 6.0, 2.0, NULL, '192.168.1.106', NOW(), 3, 1, 6),
   ('XPG 12GB', 12.0, 8.0, NULL, '192.168.1.106', NOW(), 5, 2, 6),
   ('XPG 512GB', 512.0, 176.64, NULL, '192.168.1.106', NOW(), 7, 3, 6);
-
 
 SELECT
   Registro.idRegistro,
